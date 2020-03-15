@@ -1,0 +1,15 @@
+idex_staking_node__version: 0.2.0
+idex_staking_node__container_name: idex_staking_node
+idex_staking_node__container_cpus: 1.0
+idex_staking_node__data_dir: /var/idex-staking-node/
+idex_staking_node__mysql_host: localhost
+idex_staking_node__mysql_port: 3306
+idex_staking_node__mysql_username: aurad_user
+idex_staking_node__mysql_password: dfghjklimonh
+idex_staking_node__mysql_database: aurad
+idex_staking_node__rpc_host: localhost
+idex_staking_node__rpc_port: 8545
+idex_staking_node__rpc_protocol: http
+
+
+
