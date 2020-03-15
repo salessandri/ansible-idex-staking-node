@@ -10,6 +10,3 @@ idex_staking_node__mysql_database: aurad
 idex_staking_node__rpc_host: localhost
 idex_staking_node__rpc_port: 8545
 idex_staking_node__rpc_protocol: http
-
-
-
