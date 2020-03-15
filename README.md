@@ -78,7 +78,7 @@ The following is how you would use the role:
 License
 -------
 
-BSD
+MIT
 
 Author Information
 ------------------
