@@ -62,7 +62,7 @@ The following is how you would use the role:
 ```
 - hosts: servers
   roles:
-    - role: salessandri.idex-staking-node
+    - role: salessandri.idex_staking_node
       vars:
         idex_staking_node__settings_file: files/idex-staking-node-settings.json
         idex_staking_node__mysql_host: 172.10.0.2
