@@ -1,4 +1,5 @@
 galaxy_info:
+  role_name: idex-staking-node
   author: Santiago Alessandri
   description: Setup an IDEX staking node using its docker container
 
