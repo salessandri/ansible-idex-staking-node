@@ -17,14 +17,36 @@ For the staking node you will need:
 
 - MySQL database setup with user and password for the staking node. You can use [`geerlingguy.mysql`](https://galaxy.ansible.com/geerlingguy/mysql) to set it up easily.
 
-- A pre-generated settings file. For that locally install the `@idexio/cli` package, `idex config` and use the generated file `$HOME/.idexd/ipc/settings.json`.
+- A pre-generated settings file.
 **Make sure to put it in a vault as it has sensitive information.**
 
 It will look like:
 
 ```
-{"coldWallet":"<your wallet>","token":"<hex token>","hotWallet":{"version":3,"id":"<id>","address":"<hot wallet address>","crypto":{ ... }}}
+{"coldWallet":"<your wallet public address>","token":"<hex token>","hotWallet":{"version":3,"id":"<id>","address":"<hot wallet address>","crypto":{ ... }}}
 ```
+
+To generate it, you can either use the `idex config` command after installing the whole `idex-cli` or you can use the [`idex-settings-gen.py` script](tools/idex-settings-gen.py) in this repo.
+
+To use it, create a virtualenv (or not), install the dependencies and run passing your public address where the staked tokens are:
+
+```
+
+$ python3 -m venv idex-settings-gen
+$ source idex-settings-gen/bin/activate
+$ python3 tools/idex-settings-gen.py 0xd0fe58bEE1986839AE9954D35d54a2CB16D58CB2
+2020-03-15 20:51:45,883 - INFO - Validating staking address and retrieving challenge
+Please sign the following message (without quotes): "IDEXd signed message 917fd71b3a25510522945b72365d705b"
+Enter the "sig" field value: 0x944a4814f683aa4fc9d127bc1f3fb95dd41c85f898ec26837abc62ed716a8aa51044589e049d218161e535c201e11047125a48ba3174a5af5187af27c89399be1c
+2020-03-15 20:54:15,188 - INFO - Validating challenge signature
+2020-03-15 20:54:15,188 - INFO - Signature validated, submitting challenge
+2020-03-15 20:54:17,102 - INFO - Generating settings file: settings.json
+2020-03-15 20:54:17,102 - INFO - Settings file successfully generated
+```
+
+You'll find a `settings.json` file with the settings ready to use.
+
+Note: _Use at your own risk, I haven't been able to fully test the implementation (API part) as I do not have an extra wallet with 10k tokens available for staking. The API will reject wallets who cannot stake (min amount + 7 days in wallet).
 
 Role Variables
 --------------
