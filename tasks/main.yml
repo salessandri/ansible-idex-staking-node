@@ -1,6 +1,6 @@
 ---
 
-- name: "Create base directory for IDEXd staking node data"
+- name: "Create base directory for IDEX staking replicator data"
   file:
     path: '{{ idex_staking_node__data_dir }}'
     owner: root
@@ -8,67 +8,37 @@
     mode: '750'
     state: directory
 
-- name: "Create directory for IDEXd settings"
+- name: 'Create IDEX staking replicator subdirectories'
   file:
-    path: '{{ idex_staking_node__data_dir }}/ipc'
+    path: "{{ idex_staking_node__data_dir }}/{{ item }}"
     owner: root
     group: root
     mode: '750'
     state: directory
+  loop:
+    - conf
+    - logs
 
-- name: "Copying IDEXd staking node settings"
-  copy:
-    src: '{{ idex_staking_node__settings_file }}'
-    dest: '{{ idex_staking_node__data_dir }}/ipc/settings.json'
-    owner: root
-    group: root
-    mode: '640'
-
-- name: "Create directory for IDEXd download data"
-  file:
-    path: '{{ idex_staking_node__data_dir }}/downloads'
-    owner: root
-    group: root
-    mode: '750'
-    state: directory
-
-- name: Setup idexd docker container
+- name: Setup IDEX staking replicator docker container
   docker_container:
     user: root
-    image: idexio/idexd:{{ idex_staking_node__version }}
+    image: idexio/staking-replicator:{{ idex_staking_node__version }}
     name: "{{ idex_staking_node__container_name }}"
     state: started
     restart_policy: unless-stopped
     mounts:
-      - source: '{{ idex_staking_node__data_dir }}/ipc'
-        target: /usr/idexd/ipc
+      - source: '{{ idex_staking_node__data_dir }}/conf'
+        target: /conf
         type: bind
         read_only: no
-      - source: '{{ idex_staking_node__data_dir }}/downloads'
-        target: /usr/idexd/downloads
+      - source: '{{ idex_staking_node__data_dir }}/logs'
+        target: /logs
         type: bind
         read_only: no
-    entrypoint:
-      - node
-      - lib/index.js
     env:
-      DB_HOST: '{{ idex_staking_node__mysql_host }}'
-      DB_PORT: '{{ idex_staking_node__mysql_port | string }}'
-      DB_DATABASE: '{{ idex_staking_node__mysql_database }}'
-      DB_USERNAME: '{{ idex_staking_node__mysql_username }}'
-      DB_PASSWORD: '{{ idex_staking_node__mysql_password }}'
-      DB_SYNC: '1'
-      RPC_HOST: '{{ idex_staking_node__rpc_host }}'
-      RPC_PORT: '{{ idex_staking_node__rpc_port | string }}'
-      RPC_PROTOCOL: '{{ idex_staking_node__rpc_protocol }}'
-      STAKING_HOST: 'https://sc.idex.market'
-      SNAPSHOT_HOST: 'https://s3.ca-central-1.amazonaws.com/aura-snapshots-prod'
-      SSL_PRIVATE_KEY_PATH: 'ssl/production/key.pem'
-      SSL_CERT_PATH: 'ssl/production/cert.pem'
-      SSL: '1'
-      DEBUG: '0'
-      AUTO_MIGRATE: '1'
+      API_KEY: '{{ idex_staking_node__api_key }}'
+      IDEX_STAKING_ACCESS_LOG_PATH: /logs/access.log
+      IDEX_STAKING_ACTIVITY_LOG_PATH: /logs/activity.log
+      IDEX_STAKING_ERROR_LOG_PATH: /logs/errors.log
     published_ports:
-      - '0.0.0.0:8443:8443'
-    cpu_period: 100000
-    cpu_quota: "{{ (idex_staking_node__container_cpus * 100000) | int }}"
+      - '0.0.0.0:8081:8081'
