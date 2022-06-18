@@ -23,6 +23,7 @@
   docker_container:
     user: root
     image: idexio/staking-replicator:{{ idex_staking_node__version }}
+    pull: true
     name: "{{ idex_staking_node__container_name }}"
     state: started
     restart_policy: unless-stopped
